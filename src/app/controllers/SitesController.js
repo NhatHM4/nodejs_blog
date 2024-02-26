@@ -1,5 +1,4 @@
 class SitesController {
-
     // [GET] / Home
     home(req, res) {
         res.render('home');
@@ -11,4 +10,4 @@ class SitesController {
     }
 }
 
-module.exports = new SitesController;
+module.exports = new SitesController();
