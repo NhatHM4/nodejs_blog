@@ -1,4 +1,5 @@
 const Course = require('../models/Course');
+const { multipleMongooseToObject } = require('../../util/mongoose');
 
 class SitesController {
     // [GET] / Home
@@ -6,9 +7,8 @@ class SitesController {
         try {
             let courses = await Course.find({});
             if (courses.length > 0) {
-                courses = courses.map((course) => course.toObject());
                 res.render('home', {
-                    courses: courses,
+                    courses: multipleMongooseToObject(courses),
                 });
             } else {
                 res.status(400).json({ error: 'ERROR !!' });
