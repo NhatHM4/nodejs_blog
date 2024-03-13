@@ -52,6 +52,17 @@ class MeController {
             next();
         }
     }
+
+    // [DELETE] me/delete/courses
+    async deleteCourses(req, res, next) {
+        let id = req.params.slug;
+        try {
+            await Course.deleteOne({ _id: id });
+            res.redirect('/me/stored/courses');
+        } catch (err) {
+            next();
+        }
+    }
 }
 
 module.exports = new MeController();
