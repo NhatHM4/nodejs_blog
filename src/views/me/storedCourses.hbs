@@ -1,6 +1,19 @@
 <div class="mt-4">
     <h3> Danh sách khóa học </h3>
+    <a href="/me/trash/courses">Trash</a>
     <table class="table">
+      <input type="checkbox" aria-label="Checkbox for following text input" id="pickall">
+      <label for="pickall">Chọn tất cả</label>
+      <div class="input-group">
+      <select class="custom-select" id="inputSelectCheckbox" >
+        <option selected>Choose...</option>
+        <option value="del">One</option>
+      </select>
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" id = "do-it">Thực hiện</button>
+      </div>
+    </div>
+
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -13,6 +26,9 @@
   <tbody>
     {{#each courses}}
     <tr>
+      <th scope="row">
+        <input type="checkbox" class="checkbox[]" id="{{this._id}}">
+      </th>
       <th scope="row">{{sum @index 1}}</th>
       <td>{{this.name}}</td>
       <td>{{this.description}}</td>
@@ -23,6 +39,7 @@
     {{/each}}
   </tbody>
 </table>
+<p>Tổng số data là {{count}}</p>
 </div>
 
 {{!--confirm del --}}
@@ -48,6 +65,7 @@
 </div>
 
 <form method="post" id="form-del">
+  <input type="hidden" name="idCheckbox">
 </form>
 
 <script>
@@ -64,6 +82,63 @@
       formSubmit.action=`/me/delete/courses/${id}?_method=DELETE`
       formSubmit.submit()
     })
+
+    let checkall = document.getElementById("pickall")
+    
+    checkall.addEventListener("change", (e)=>{
+        if (e.target.checked) {
+          let arrayCheckbox = document.getElementsByClassName("checkbox[]")
+          let checkboxArray = Array.from(arrayCheckbox);
+
+          // Sử dụng phương thức forEach trên mảng checkboxArray
+          checkboxArray.forEach(function(checkbox) {
+            checkbox.checked =true
+          });
+        } else {
+          let arrayCheckbox = document.getElementsByClassName("checkbox[]")
+          let checkboxArray = Array.from(arrayCheckbox);
+
+          // Sử dụng phương thức forEach trên mảng checkboxArray
+          checkboxArray.forEach(function(checkbox) {
+            checkbox.checked =false
+          });
+        }
+    })
+
+    let checkboxTable = document.getElementsByClassName("checkbox[]")
+    Array.from(checkboxTable).forEach((checkboxItem)=>{
+        checkboxItem.addEventListener("change",(e)=>{
+              var allChecked = Array.from(checkboxTable).every(function(checkbox) {
+                return checkbox.checked === true;
+              });
+              if (allChecked){
+                document.getElementById("pickall").checked =true;
+              } else {
+                document.getElementById("pickall").checked =false;
+              }
+        })
+    })
+
+    let buttonExecute = document.getElementById("do-it")
+    buttonExecute.addEventListener("click", ()=>{
+      var formSubmit =  document.getElementById('form-del');
+      formSubmit.action=`/me/delete/courses?_method=DELETE`
+      let arrId = Array.from(checkboxTable).reduce((accumulator, checkboxEle) => {
+        if (checkboxEle.checked && checkboxEle.id !== '') {
+          accumulator.push(checkboxEle.id);
+        }
+        return accumulator;
+      }, []);
+      let stringIds = arrId.join(";");
+
+      formSubmit.idCheckbox.value= stringIds;
+      console.log(formSubmit.idCheckbox.value)
+      formSubmit.submit()
+    })
+
+    
+
+
 
 
 })
