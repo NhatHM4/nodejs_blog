@@ -17,7 +17,10 @@
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Tên Khóa Học</th>
+      <th scope="col">Index</th>
+      <th scope="col">
+        Tên Khóa Học <a href="?_sort&name=ten&type=asc" id="sortName">^^</a>
+      </th>
       <th scope="col">Trình độ</th>
       <th scope="col">Thời gian tạo</th>
       <th scope="col">Action</th>
@@ -135,7 +138,33 @@
       console.log(formSubmit.idCheckbox.value)
       formSubmit.submit()
     })
+      let isASC = true;
+     let button = document.getElementById("sortName")
+    button.addEventListener('click', function (e){
+        e.preventDefault();
+        e.target.href = changeParameterValuesInUrl(e.target.href, "name", "name")
+        e.target.href = changeParameterValuesInUrl(e.target.href, "type", isASC ? "asc" :"desc" )
+        isASC = !isASC
 
+    })
+
+
+      function changeParameterValuesInUrl(url, paramName, paramValue) {
+        let urlParts = url.split('?');
+        let baseUrl = urlParts[0];
+        let queryParams = urlParts[1].split('&');
+
+        for (let i = 0; i < queryParams.length; i++) {
+          let paramParts = queryParams[i].split('=');
+          if (paramParts[0] === paramName) {
+            paramParts[1] = paramValue;
+            queryParams[i] = paramParts.join('=');
+          }
+        }
+
+        return baseUrl + '?' + queryParams.join('&');
+      }
+    
     
 
 

@@ -7,10 +7,16 @@ const {
 class MeController {
     // [GET] / me/ stored/courses
     async storedCourses(req, res, next) {
+        let courses = await Course.find({});
+
+        if (req.query.hasOwnProperty('_sort')) {
+            courses = await Course.find({}).sort({
+                [req.query.name]: req.query.type,
+            });
+        }
+
         try {
             let count = await Course.countDocuments();
-            // console.log(count)
-            let courses = await Course.find();
             if (courses.length > 0) {
                 res.render('me/storedCourses', {
                     courses: multipleMongooseToObject(courses),
